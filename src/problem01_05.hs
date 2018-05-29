@@ -1,4 +1,7 @@
 import Data.List (foldl')
+import Control.Monad (liftM2)
+import Control.Applicative ((<*>))
+
 -- problem 1
 -- find the last element of a list
 myLast :: [a] -> a
@@ -102,7 +105,7 @@ reverse1 :: [a] -> [a]
 reverse1 = reverse
 
 reverse2 :: [a] -> [a]
-reverse2 = foldr (\a b -> a:b) []
+reverse2 = foldr (\a b -> a : b) []
 
 reverse3 :: [a] -> [a] -- slower than reverse2
 reverse3 ls = go ls
@@ -112,4 +115,5 @@ reverse3 ls = go ls
     go (x:xs) = go xs ++ [x]
 
 reverse4 :: [a] -> [a]
-reverse4 = foldl (\b a -> a:b) []
+reverse4 = foldl (\b a -> a : b) []
+
