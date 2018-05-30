@@ -1,4 +1,5 @@
 import Data.List (foldl')
+import qualified Data.Foldable as F
 import Control.Monad (liftM2)
 import Control.Applicative ((<*>))
 
@@ -80,3 +81,19 @@ flatten5 (List xs) = foldMap flatten5 xs
 flatten6 :: NestedList a -> [a]
 flatten6 (Elem a) = return a
 flatten6 (List xs) = foldr (++) [] $ map flatten6 xs
+
+-- use accumulator
+flatten7 :: NestedList a -> [a]
+flatten7 = reverse . go []
+  where go acc (Elem x) = x:acc
+        go acc (List []) = acc
+        go acc (List (x:xs)) = go (go acc x) (List xs)
+
+-- using Foldable
+instance F.Foldable NestedList where
+  foldMap f (Elem a) = f a
+  foldMap _ (List []) = mempty
+  foldMap f (List (x:xs)) = foldMap f x `mappend` foldMap f (List xs)
+
+flatten8 :: NestedList a -> [a]
+flatten8 = foldMap (\x -> [x])
