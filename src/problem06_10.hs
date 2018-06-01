@@ -1,4 +1,4 @@
-import Data.List (foldl')
+import Data.List (foldl', group)
 import qualified Data.Foldable as F
 import Control.Monad (liftM2)
 import Control.Applicative ((<*>))
@@ -97,3 +97,38 @@ instance F.Foldable NestedList where
 
 flatten8 :: NestedList a -> [a]
 flatten8 = foldMap (\x -> [x])
+
+-- Problem 8
+{-
+(**) Eliminate consecutive duplicates of list elements.
+
+If a list contains repeated elements they should be replaced with a single copy of the element. The order of the elements should not be changed.
+
+Example:
+
+* (compress '(a a a a b c c a a d e e e e))
+(A B C A D E)
+Example in Haskell:
+
+> compress "aaaabccaadeeee"
+"abcade"
+-}
+compress1 :: Eq a => [a] -> [a]
+compress1 = foldr f []
+  where f a [] = [a]
+        f a acc@(x:xs) = if a == x then acc else a:acc
+
+compress2 :: Eq a => [a] -> [a]
+compress2 = map head . group
+
+compress3 :: Eq a => [a] -> [a]
+compress3 (x:ys@(y:_))
+  | x == y = ys
+  | otherwise = x : compress3 ys
+compress3 ys = ys
+
+
+-- very elegant
+compress4 :: Eq a => [a] -> [a]
+compress4 [] = []
+compress4 (x:xs) = x : (compress4 $ dropWhile (== x) xs)
